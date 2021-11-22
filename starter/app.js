@@ -11,9 +11,11 @@ app.use(express.json());
 // get all tasks
 task.get('/',function(req,res,next){
     taskRepos.get(function(data){
-        res.send(data);
+        res.status(200).json(data)
     },
-     next())
+     function(error){
+        res.status(500).json(error);
+     })
 })
 
 //creat new task
@@ -25,31 +27,60 @@ task.post('/',function(req,res,next){
 
     taskRepos.createTask(newTask,function(data){
         console.log(newTask);
-        res.json(data)
+        res.status(200).json(data);
     },
      function(error){
-         console.log(error);
-     })})
+        res.status(500).json(error);
+     })
+})
 
 //get single task
 task.get('/:id',function(req,res,next){
-    taskRepos.getSingle(req.param.id, function(data){
-        res.send(data);
-    }, next())
+    taskRepos.getSingle(req.params.id, function(data){
+        if(!data){
+            res.status(404).json({errorMessage: 'Task not found!'}); 
+        }
+        else{
+            res.status(200).json(data);
+        }
+    }, function(error){
+        res.json(error)
+    })
 })
 
 //patch task
-task.patch('/:id',function(req,res,next){
-    taskRepos.updateTask(req.param.id, function(data){
-        res.send(data);
-    }, next())})
+task.patch('/:id/',function(req,res,next){
+    let taskName = req.params.id;
+    let updatedTask = {
+        name: req.query.name,
+        complete: req.query.complete
+    };
+    taskRepos.updateTask(taskName,updatedTask, function(data){
+        if(!data){
+            res.status(404).json({errorMessage: 'Task not found!'}); 
+        }
+        else{
+            res.status(200).json(data);
+        }    
+    }, function(error){
+        res.json(error);
+    })
+})
 
 
 //delete task
 task.delete('/:id',function(req,res,next){
-    taskRepos.deleteTask(req.param.id, function(data){
-        res.send(data);
-    }, next())})
+    taskRepos.deleteTask(req.params.id, function(data){
+        if(!data){
+            res.status(404).json({errorMessage: 'Task not found!'}); 
+        }
+        else{
+            res.status(200).json(data);
+        }    
+    }, function(error){
+        res.json(error)
+    })
+})
 
 app.use('/api/v1/tasks', task)
 

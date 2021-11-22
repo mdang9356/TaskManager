@@ -1,7 +1,13 @@
 const Task = require("../db/model.js");
 let taskRepos = {
-    get: function(resolve,reject){
-        resolve('this is get');
+    get: async function(resolve,reject){
+        try{
+            const allTask = await Task.find({});
+            resolve(allTask);
+        }
+        catch(error){
+            reject(error)
+        }
     },
 
     createTask: async function(newTask,resolve,reject){
@@ -15,16 +21,34 @@ let taskRepos = {
         }
     },
     
-    getSingle: function(id,resolve,reject){
-        resolve('this is get single');
+    getSingle: async function(id,resolve,reject){
+        try{
+            const task = await Task.findOne({name: id});
+            resolve(task);
+        }
+        catch(error){
+            reject(error)
+        }
     },
 
-    updateTask: function(id,resolve,reject){
-        resolve('this is update task');
+    updateTask: async function(taskName,updatedTask,resolve,reject){
+        try{
+            const task = await Task.findOneAndUpdate({name: taskName},updatedTask,{new: true,runValidators: true});
+            resolve(task);
+        }
+        catch(error){
+            reject(error)
+        }    
     },
 
-    deleteTask: function(id,resolve,reject){
-        resolve('this is delete');
+    deleteTask: async function(id,resolve,reject){
+        try{
+            const task = await Task.findOneAndDelete({name: id});
+            resolve(task);
+        }
+        catch(error){
+            reject(error)
+        }    
     },
 
 }
