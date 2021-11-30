@@ -6,6 +6,8 @@ const taskRepos = require('./taskRepos/task.js');
 require('dotenv').config();
 const port = 3000;
 
+// middleware
+app.use(express.static('./public'))
 app.use(express.json());
 
 // get all tasks
@@ -20,10 +22,7 @@ task.get('/',function(req,res,next){
 
 //creat new task
 task.post('/',function(req,res,next){
-    let newTask = {
-        name: req.query.name,
-        complete: req.query.complete
-    };
+    let newTask = req.body;
 
     taskRepos.createTask(newTask,function(data){
         console.log(newTask);
@@ -50,12 +49,10 @@ task.get('/:id',function(req,res,next){
 
 //patch task
 task.patch('/:id/',function(req,res,next){
-    let taskName = req.params.id;
-    let updatedTask = {
-        name: req.query.name,
-        complete: req.query.complete
-    };
-    taskRepos.updateTask(taskName,updatedTask, function(data){
+    let taskID = req.params.id;
+    let updatedTask = req.body;
+    
+    taskRepos.updateTask(taskID,updatedTask, function(data){
         if(!data){
             res.status(404).json({errorMessage: 'Task not found!'}); 
         }
