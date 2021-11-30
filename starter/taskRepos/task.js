@@ -23,7 +23,7 @@ let taskRepos = {
     
     getSingle: async function(id,resolve,reject){
         try{
-            const task = await Task.findOne({name: id});
+            const task = await Task.findOne({_id: id});
             resolve(task);
         }
         catch(error){
@@ -31,9 +31,9 @@ let taskRepos = {
         }
     },
 
-    updateTask: async function(taskName,updatedTask,resolve,reject){
+    updateTask: async function(taskID,updatedTask,resolve,reject){
         try{
-            const task = await Task.findOneAndUpdate({name: taskName},updatedTask,{new: true,runValidators: true});
+            const task = await Task.findOneAndUpdate({_id: taskID},updatedTask,{new: true,runValidators: true});
             resolve(task);
         }
         catch(error){
@@ -43,7 +43,7 @@ let taskRepos = {
 
     deleteTask: async function(id,resolve,reject){
         try{
-            const task = await Task.findOneAndDelete({name: id});
+            const task = await Task.findOneAndDelete({_id: id});
             resolve(task);
         }
         catch(error){
